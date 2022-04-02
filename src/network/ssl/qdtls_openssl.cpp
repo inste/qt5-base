@@ -704,9 +704,13 @@ bool DtlsState::initCtxAndConnection(QDtlsBasePrivate *dtlsBase)
     if (dtlsBase->mode == QSslSocket::SslServerMode) {
         if (dtlsBase->dtlsConfiguration.dtlsCookieEnabled)
             q_SSL_set_options(newConnection.data(), SSL_OP_COOKIE_EXCHANGE);
+#if OPENSSL_VERSION_NUMBER >= 0x10101006L && defined(TLS1_3_VERSION) && !defined(OPENSSL_NO_PSK)
         q_SSL_set_psk_server_callback(newConnection.data(), dtlscallbacks::q_PSK_server_callback);
+#endif
     } else {
+#if OPENSSL_VERSION_NUMBER >= 0x10101006L && defined(TLS1_3_VERSION) && !defined(OPENSSL_NO_PSK)
         q_SSL_set_psk_client_callback(newConnection.data(), dtlscallbacks::q_PSK_client_callback);
+#endif
     }
 
     tlsContext.swap(newContext);

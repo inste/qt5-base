@@ -239,6 +239,10 @@ static int q_ssl_psk_use_session_callback(SSL *ssl, const EVP_MD *md, const unsi
     return 1; // need to return 1 or else "the connection setup fails."
 }
 
+#endif // TLS1_3_VERSION
+
+#endif // !OPENSSL_NO_PSK
+
 int q_ssl_sess_set_new_cb(SSL *ssl, SSL_SESSION *session)
 {
     if (!ssl) {
@@ -254,9 +258,6 @@ int q_ssl_sess_set_new_cb(SSL *ssl, SSL_SESSION *session)
                                                                  QSslSocketBackendPrivate::s_indexForSSLExtraData));
     return socketPrivate->handleNewSessionTicket(ssl);
 }
-#endif // TLS1_3_VERSION
-
-#endif // !OPENSSL_NO_PSK
 
 #if QT_CONFIG(ocsp)
 
